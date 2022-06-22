@@ -1,0 +1,29 @@
+{
+  "name": "english4kids",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "pm2 start src/app.js -i max",
+    "reload": "pm2 reload src/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-formidable": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.17.0"
+  },
+  "eslintConfig": {
+    "env": {
+        "node": true
+    }
+}
+}

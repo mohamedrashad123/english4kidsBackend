@@ -1,0 +1,25 @@
+{
+    "extends": "eslint:recommended",
+    "rules": {
+        "consistent-return": 2,
+        "no-else-return"   : 1,
+        "semi"             : [1, "always"],
+        "space-unary-ops"  : 2,
+        "indent": [
+            "off",
+            "tab"
+        ],
+        "no-unused-vars": ["error", { "args": "none" }]
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "ecmaFeatures": {
+            "arrowFunctions": true
+        }
+    },
+
+    "env": {
+        "es6": true,
+        "node": true
+    }
+}
