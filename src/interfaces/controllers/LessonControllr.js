@@ -81,72 +81,77 @@ class LessonController extends Controller {
             const {lessonImage} = req.files;
             let lessonImageLink = "";
 
-            if (lessonImage)
-                lessonImageLink = getImgPath(lessonImage, "lessons");
+            // if (lessonImage)
+            //     lessonImageLink = getImgPath(lessonImage, "lessons");
 
-            // create lesson data map
-            const lessonData = {
-                gradeId,
-                unitId,
-                title,
-                description,
-                video,
-                image: lessonImageLink,
-                grammar_images,
-                words_info,
-                words_images
-            };
+            // // create lesson data map
+            // const lessonData = {
+            //     gradeId,
+            //     unitId,
+            //     title,
+            //     description,
+            //     video,
+            //     image: lessonImageLink,
+            //     grammar_images,
+            //     words_info,
+            //     words_images
+            // };
 
-            // send data to create lesson use case and get lesson id
-            const lessonId = await createLesson(lessonData, {
-                LessonRepositry: this.#lessonRepositry
-            });
+            // // send data to create lesson use case and get lesson id
+            // const lessonId = await createLesson(lessonData, {
+            //     LessonRepositry: this.#lessonRepositry
+            // });
 
-            if (lessonId) {
-                const {questions} = req.fields;
-                const formatedQuestions =
-                    typeof questions === "string"
-                        ? JSON.parse(questions)
-                        : questions;
+            // if (lessonId) {
+            //     const {questions} = req.fields;
+            //     const formatedQuestions =
+            //         typeof questions === "string"
+            //             ? JSON.parse(questions)
+            //             : questions;
 
-                if (formatedQuestions.length) {
-                    for (let question of formatedQuestions) {
-                        // create lesson entity
-                        const questionData = Object.assign({}, question, {
-                            lessonId
-                        });
+            //     if (formatedQuestions.length) {
+            //         for (let question of formatedQuestions) {
+            //             // create lesson entity
+            //             const questionData = Object.assign({}, question, {
+            //                 lessonId
+            //             });
 
-                        // send lesson question data to usecase
-                        const questionId = await createLessonQuestion(
-                            questionData,
-                            {LessonQuestionRepositry: this.#questionRepositry}
-                        );
+            //             // send lesson question data to usecase
+            //             const questionId = await createLessonQuestion(
+            //                 questionData,
+            //                 {LessonQuestionRepositry: this.#questionRepositry}
+            //             );
 
-                        if (questionId) {
-                            for (let answer of question.answers) {
-                                const answerData = Object.assign({}, answer, {
-                                    questionId
-                                });
+            //             if (questionId) {
+            //                 for (let answer of question.answers) {
+            //                     const answerData = Object.assign({}, answer, {
+            //                         questionId
+            //                     });
 
-                                createLessonAnswerQuestion(answerData, {
-                                    LessonQuestionAnswerRepositry:
-                                        this.#answerRepositry
-                                });
-                            }
-                        } else {
-                            throw new Error(
-                                "error on creating new lesson question"
-                            );
-                        }
-                    }
-                }
+            //                     createLessonAnswerQuestion(answerData, {
+            //                         LessonQuestionAnswerRepositry:
+            //                             this.#answerRepositry
+            //                     });
+            //                 }
+            //             } else {
+            //                 throw new Error(
+            //                     "error on creating new lesson question"
+            //                 );
+            //             }
+            //         }
+            //     }
 
-                this.sendSuccess(
-                    res,
-                    {statusCode: 200, lessonId},
-                    "lesson created successfully"
-                );
-            } else this.sendError(res, "error on creating new lesson");
+            // this.sendSuccess(
+            //     res,
+            //     {statusCode: 200, lessonId},
+            //     "lesson created successfully"
+            // );
+            this.sendSuccess(
+                res,
+                {statusCode: 200, lessonImage},
+                "lesson created successfully"
+            );
+            // } else this.sendError(res, "error on creating new lesson");
         } catch (err) {
             console.log(err);
             this.sendError(res, err.message);
