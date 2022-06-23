@@ -4,11 +4,7 @@ const path = require("path");
 exports.getImgPath = (img, folder) => {
     try {
         // get upload image name
-        const uploadImgName = img.path.slice(
-            img.path.lastIndexOf(
-                `${process.platform === "win32" ? "\\" : "/"}`
-            ) + 1
-        );
+        const uploadImgName = img.path.slice(img.path.lastIndexOf("/") + 1);
 
         // get img full name
         const imgFullName = img.name;
