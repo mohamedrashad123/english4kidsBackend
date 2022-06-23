@@ -19,7 +19,7 @@ exports.getImgPath = (img, folder) => {
     // save image to new path
     const newPath = path.resolve(
         __dirname,
-        `../../../cdn/${folder}/${newImgName}`
+        `../../../cdn-english4kids/${folder}/${newImgName}`
     );
 
     // get uploaded image data
