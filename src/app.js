@@ -3,7 +3,7 @@ const cors = require("cors");
 const env = require("dotenv");
 const express = require("express");
 const Server = require("./infra/server/server");
-const cluster = require("cluster");
+// const cluster = require("cluster");
 const expressFormidable = require("express-formidable");
 const TokenHandler = require("./application/security/TokenHandler");
 const AuthContrller = require("./interfaces/controllers/AuthController");
@@ -11,7 +11,7 @@ const LessonController = require("./interfaces/controllers/LessonControllr");
 const UploadController = require("./interfaces/controllers/uploadImageController");
 const QuizController = require("./interfaces/controllers/QuizController");
 
-const totalCPUs = require("os").cpus().length;
+// const totalCPUs = require("os").cpus().length;
 // app configration
 const app = express();
 env.config();
@@ -39,21 +39,21 @@ const controllers = [
 Promise.resolve().then(() => {
     server.loadMiddlewares(middlewares);
     server.loadControllers(controllers);
-    if (cluster.isMaster) {
-        console.log(`Number of CPUs is ${totalCPUs}`);
-        console.log(`Master ${process.pid} is running`);
+    // if (cluster.isMaster) {
+    //     console.log(`Number of CPUs is ${totalCPUs}`);
+    //     console.log(`Master ${process.pid} is running`);
 
-        // Fork workers.
-        for (let i = 0; i < totalCPUs; i++) {
-            cluster.fork();
-        }
+    //     // Fork workers.
+    //     for (let i = 0; i < totalCPUs; i++) {
+    //         cluster.fork();
+    //     }
 
-        cluster.on("exit", (worker, code, signal) => {
-            console.log(`worker ${worker.process.pid} died`);
-            console.log("Let's fork another worker!");
-            cluster.fork();
-        });
-    } else {
-        server.run();
-    }
+    //     cluster.on("exit", (worker, code, signal) => {
+    //         console.log(`worker ${worker.process.pid} died`);
+    //         console.log("Let's fork another worker!");
+    //         cluster.fork();
+    //     });
+    // } else {
+    server.run();
+    // }
 });
