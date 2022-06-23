@@ -22,7 +22,7 @@ const middlewares = [
     cors(),
     expressFormidable({
         encoding: "utf-8",
-        uploadDir: path.join(__dirname, "./public"),
+        uploadDir: "./public",
         multiples: true
     })
 ];
