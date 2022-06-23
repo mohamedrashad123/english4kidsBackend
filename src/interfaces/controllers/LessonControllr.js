@@ -79,8 +79,10 @@ class LessonController extends Controller {
                 words_images
             } = req.fields;
             const {lessonImage} = req.files;
+            let lessonImageLink = "";
 
-            const lessonImageLink = getImgPath(lessonImage, "lessons");
+            if (lessonImage)
+                lessonImageLink = getImgPath(lessonImage, "lessons");
 
             // create lesson data map
             const lessonData = {
@@ -102,7 +104,6 @@ class LessonController extends Controller {
 
             if (lessonId) {
                 const {questions} = req.fields;
-                console.log(questions);
                 const formatedQuestions =
                     typeof questions === "string"
                         ? JSON.parse(questions)
