@@ -43,4 +43,10 @@ module.exports = class extends LessonQuestionAnswerRepository {
 
         return lessonDetails;
     }
+
+    async updateById(answerEntity, answerId) {
+        return await this.#model.update(answerEntity, {
+            where: {ID: answerId}
+        });
+    }
 };

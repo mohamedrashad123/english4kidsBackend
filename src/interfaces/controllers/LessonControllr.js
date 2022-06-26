@@ -8,13 +8,16 @@ const {
     createLesson,
     getLessonDetails,
     getListOfLessons,
-    subscribeLesson
+    subscribeLesson,
+    updateLesson
 } = require("../../application/use_cases/lessons");
 const {
-    createLessonQuestion
+    createLessonQuestion,
+    updateQuestion
 } = require("../../application/use_cases/lessons/questions");
 const {
-    createLessonAnswerQuestion
+    createLessonAnswerQuestion,
+    updateAnswer
 } = require("../../application/use_cases/lessons/questions/answers");
 const {getImgPath} = require("../../utils/imageSaver");
 
@@ -47,6 +50,12 @@ class LessonController extends Controller {
             path: "/:lessonId/subscribe",
             method: Methods.POST,
             handler: (req, res) => this.handleSubscribeLesson(req, res),
+            localMiddleware: []
+        },
+        {
+            path: "/:lessonId",
+            method: Methods.PUT,
+            handler: (req, res) => this.handleEditLesson(req, res),
             localMiddleware: []
         }
     ];
@@ -205,6 +214,100 @@ class LessonController extends Controller {
                 this.sendSuccess(res, {statusCode: 200, lessonHistoryId}, "ok");
             else this.sendError(res, "error when subscribing on lesson");
         } catch (err) {
+            this.sendError(res, err.message);
+        }
+    };
+
+    handleEditLesson = async (req, res) => {
+        try {
+            // const token = req.headers["authorization"];
+            // const {
+            // 	dataValues: { ID: userId },
+            // } = await userRepositry.getIdByToken(token);
+
+            // extend  lesson data from request
+            const {
+                gradeId,
+                unitId,
+                title,
+                description,
+                video,
+                grammar_images,
+                words_info,
+                words_images
+            } = req.fields;
+            const {lessonId} = req.params;
+            const {lessonImage} = req.files;
+
+            // create lesson data map
+            const lessonData = {
+                gradeId,
+                unitId,
+                title,
+                description,
+                video,
+                grammar_images,
+                words_info,
+                words_images
+            };
+
+            if (lessonImage) {
+                const lessonImageLink = getImgPath(lessonImage, "lessons");
+                lessonData.image = lessonImageLink;
+            }
+
+            // send data to create lesson use case and get lesson id
+            const result = await updateLesson(lessonData, lessonId, {
+                lessonRepositry: this.#lessonRepositry
+            });
+
+            if (result.length) {
+                const {questions} = req.fields;
+                const formatedQuestions =
+                    typeof questions === "string"
+                        ? JSON.parse(questions)
+                        : questions;
+
+                if (formatedQuestions.length) {
+                    for (let question of formatedQuestions) {
+                        // create lesson entity
+                        const questionData = Object.assign({}, question, {
+                            lessonId
+                        });
+
+                        // send lesson question data to usecase
+                        const questionId = await updateQuestion(
+                            questionData,
+                            question.ID,
+                            {lessonQuestionRepositry: this.#questionRepositry}
+                        );
+
+                        if (questionId) {
+                            for (let answer of question.answers) {
+                                const answerData = Object.assign({}, answer, {
+                                    questionId
+                                });
+
+                                updateAnswer(answerData, answer.ID, {
+                                    answerRepositry: this.#answerRepositry
+                                });
+                            }
+                        } else {
+                            throw new Error(
+                                "error on updating lesson questions"
+                            );
+                        }
+                    }
+                }
+
+                this.sendSuccess(
+                    res,
+                    {statusCode: 200, success: true},
+                    "lesson saved successfully"
+                );
+            } else this.sendError(res, "error on updating lesson");
+        } catch (err) {
+            console.log(err);
             this.sendError(res, err.message);
         }
     };

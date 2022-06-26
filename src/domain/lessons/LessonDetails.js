@@ -1,6 +1,8 @@
 class LessonDetails {
     constructor({
-        ID,
+        ID = 5,
+        unitId,
+        gradeId,
         title,
         description,
         video,
@@ -11,6 +13,8 @@ class LessonDetails {
         questions = []
     }) {
         this.id = ID;
+        this.unitId = unitId;
+        this.gradeId = gradeId;
         this.title = title;
         this.description = description;
         this.video = video;

@@ -59,6 +59,8 @@ module.exports = class extends LessonRepositry {
         const lessonDetails = await this.#model.findByPk(lessonId, {
             attributes: [
                 "ID",
+                "gradeId",
+                "unitId",
                 "title",
                 "description",
                 "video",
@@ -80,5 +82,13 @@ module.exports = class extends LessonRepositry {
         });
 
         return lessonDetails;
+    }
+
+    async updateById(lessonEntity, lessonId) {
+        const result = await this.#model.update(lessonEntity, {
+            where: {ID: lessonId}
+        });
+
+        return result;
     }
 };

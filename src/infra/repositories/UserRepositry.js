@@ -3,40 +3,63 @@ const UserRepositry = require("../../domain/users/userRepositry");
 const sequelize = require("../orm/sequlize");
 
 module.exports = class extends UserRepositry {
-	#db;
-	#model;
-	#tokenHandler;
-	constructor(tokenHandler) {
-		super();
-		this.#db = sequelize;
-		this.#model = this.#db.model("user");
-		this.#tokenHandler = tokenHandler;
-	}
+    #db;
+    #model;
+    #tokenHandler;
+    constructor(tokenHandler) {
+        super();
+        this.#db = sequelize;
+        this.#model = this.#db.model("user");
+        this.#tokenHandler = tokenHandler;
+    }
 
-	persist = async (userEntity) => {
-		const { fullname, phone, avatar, password } = userEntity;
+    persist = async (userEntity) => {
+        const {fullname, phone, password, gradeId} = userEntity;
 
-		// create user on database
-		const userData = await this.#model.create({
-			fullname,
-			phone,
-			avatar,
-			password,
-		});
+        // create user on database
+        const userData = await this.#model.create({
+            fullname,
+            phone,
+            password,
+            gradeId
+        });
 
-		// save user
-		userData.save();
+        // save user
+        userData.save();
 
-		// generate token
-		const token = await new this.#tokenHandler({
-			ID: userData.ID,
-		}).generateToken();
+        // generate token
+        const token = await new this.#tokenHandler({
+            ID: userData.ID
+        }).generateToken();
 
-		// return user data
-		return new User(userData.ID, userData.fullname, userData.phone, userData.avatar, token);
-	};
+        // return user data
+        return new User({
+            ID: userData.ID,
+            fullname: userData.fullname,
+            phone: userData.phone,
+            gradeId: userData.gradeId,
+            token
+        });
+    };
 
-	getIdByToken = async (token) => {
-		return await this.#model.findOne({ where: { token }, attributes: ["ID"] });
-	};
+    async getUser(phone, password) {
+        const user = await this.#model.findOne({
+            attributes: ["ID", "fullName", "gradeId", "phone"],
+            where: {phone, password}
+        });
+
+        // generate token
+        const token = await new this.#tokenHandler({
+            ID: user?.ID
+        }).generateToken();
+
+        // return user data
+        return new User({
+            ID: user.ID,
+            fullname: user.fullname,
+            phone: user.phone,
+            gradeId: user.gradeId,
+            token
+        });
+    }
 };

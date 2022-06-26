@@ -59,4 +59,10 @@ module.exports = class extends LessonQuestionRepositry {
 
         return lessonDetails;
     }
+
+    async updateById(questionEntity, questionId) {
+        return await this.#model.update(questionEntity, {
+            where: {ID: questionId}
+        });
+    }
 };

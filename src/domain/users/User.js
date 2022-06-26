@@ -1,13 +1,13 @@
 class User {
-	constructor(ID, fullname, phone, avatar, token, status, password) {
-		this.ID = ID;
-		this.fullname = fullname;
-		this.phone = phone;
-		this.avatar = avatar;
-		this.token = token;
-		this.status = status;
-		this.password = password;
-	}
+    constructor({ID, fullname, phone, gradeId, token, status, password}) {
+        this.id = ID;
+        this.fullname = fullname;
+        this.phone = phone;
+        this.gradeId = gradeId;
+        this.token = token;
+        this.status = status;
+        this.password = password;
+    }
 }
 
 module.exports = User;

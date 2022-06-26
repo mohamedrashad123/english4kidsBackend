@@ -1,5 +1,6 @@
 const cors = require("cors");
 const env = require("dotenv");
+const path = require("path");
 const express = require("express");
 const Server = require("./infra/server/server");
 const cluster = require("cluster");
@@ -21,7 +22,7 @@ const middlewares = [
     cors(),
     expressFormidable({
         encoding: "utf-8",
-        uploadDir: "./public",
+        uploadDir: path.resolve(__dirname, "public"),
         multiples: true
     })
 ];
